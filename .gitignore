@@ -17,5 +17,5 @@ frontend/dist/
 out/
 # OS files
 .DS_Store
-# Samples (large audio files)
-Samples/
+# Samples (large audio files - only ignore root, not frontend/public)
+/Samples/
