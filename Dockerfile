@@ -2,9 +2,8 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Copy source files and audio samples
+# Copy source files (audio samples are served by frontend, not backend)
 COPY src/ ./src/
-COPY Samples/ ./Samples/
 
 # Compile server files (excludes JUnit tests and JavaFX Main that have external dependencies)
 RUN mkdir -p out && javac -d out \
