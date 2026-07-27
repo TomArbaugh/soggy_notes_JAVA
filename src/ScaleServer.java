@@ -66,9 +66,9 @@ public class ScaleServer {
     private static final Pattern JSON_SESSION_ID =
         Pattern.compile("\"sessionId\"\\s*:\\s*\"([^\"]*)\"");
 
-    // Server socket for port 8080
+    // Server socket - uses PORT env var for Render, defaults to 8080 for local dev
     public static void main(String[] args) throws IOException {
-        int port = 8080;
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/api/scales", ScaleServer::handleScales);
         server.createContext("/api/harmonies", ScaleServer::handleHarmonies);

@@ -20,8 +20,11 @@
  *         ]}
  */
 
-// Shared prefix for all proxied API routes in development (Vite proxy to port 8080).
-const API_BASE = '/api';
+// In production, VITE_API_URL points to the deployed backend (e.g., https://ear-trainer-backend.onrender.com)
+// In development, falls back to '/api' which Vite proxies to localhost:8080
+const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 
 /**
  * Fetch all 7 scale modes for a given root key from the Java backend.
