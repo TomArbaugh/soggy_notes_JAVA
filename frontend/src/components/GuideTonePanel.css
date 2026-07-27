@@ -1,0 +1,78 @@
+/*
+ * Name: Tom Arbaugh
+ * Date: 4/14/2026
+ * Assignment: Final Project
+ * Notes: Ear Trainer
+ */
+.guide-tone-panel {
+  margin: 0 0 0.5rem; /* Anchor wrapper supplies top spacing and border. */
+  padding: 1rem;
+  border: 1px solid #2a2a44;
+  border-radius: 8px;
+  background: rgba(22, 22, 38, 0.6);
+}
+
+.guide-tone-heading {
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+  color: #e0e0f0;
+}
+
+.guide-tone-hint {
+  font-size: 0.75rem;
+  color: #8a8aa8;
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
+}
+
+.guide-tone-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #a8a8c8;
+  margin-bottom: 0.75rem;
+}
+
+.guide-tone-select {
+  max-width: 240px;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #3a3a58;
+  background: #16162a;
+  color: #e0e0f0;
+}
+
+.guide-tone-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.guide-tone-btn {
+  padding: 0.4rem 0.65rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #4a4a68;
+  background: linear-gradient(135deg, #3d3566, #2a2844);
+  color: #e8e8f8;
+  cursor: pointer;
+}
+
+.guide-tone-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.guide-tone-btn.danger {
+  border-color: #6b3a4a;
+  background: linear-gradient(135deg, #553044, #2a2230);
+}
+
+.guide-tone-btn.secondary {
+  background: #1e1e32;
+}
+
+.guide-tone-btn:not(:disabled):hover {
+  filter: brightness(1.08);
+}

@@ -1,0 +1,119 @@
+/*
+ * Name: Tom Arbaugh
+ * Date: 4/14/2026
+ * Assignment: Final Project
+ * Notes: Ear Trainer
+ */
+/* Root container for scale and harmony listening tab content sections. */
+.listening-tab {
+  padding: 1.5rem 0; /* Vertical padding separates grid from tab bars above. */
+}
+
+/* Instructional paragraph above mode grid explaining user action. */
+.tab-instructions {
+  text-align: center; /* Center multi-line instructional copy for narrow column layout. */
+  color: #888; /* Muted gray so instructions do not overpower interactive grid. */
+  margin-bottom: 1.25rem; /* Space before reverse toggle or first row of buttons. */
+  font-size: 0.95rem; /* Slightly smaller than body default for secondary prose. */
+}
+
+/* Emphasized tonic name inside instructions uses brand teal accent color. */
+.tab-instructions strong {
+  color: #4ecdc4; /* Teal highlight for currently selected key letter in sentence. */
+}
+
+/* Flex row layout for checkbox + label pair for reverse playback toggle. */
+.reverse-toggle {
+  display: flex; /* Horizontal alignment of checkbox and descriptive text. */
+  align-items: center; /* Vertically center checkbox box with adjacent label copy. */
+  justify-content: center; /* Center toggle row within listening tab column width. */
+  gap: 0.5rem; /* Small horizontal gap between checkbox square and label string. */
+  margin-bottom: 1rem; /* Separate toggle strip from mode button grid below. */
+  font-size: 0.9rem; /* Slightly reduced size for auxiliary control labeling. */
+  color: #aaa; /* Light gray body text for toggle description readability on dark bg. */
+  cursor: pointer; /* Whole label row toggles checkbox for larger hit target UX. */
+  user-select: none; /* Avoid accidental text highlight when clicking label to toggle. */
+}
+
+/* Native checkbox input sized for touch and aligned with label text block. */
+.reverse-toggle input {
+  width: 1rem; /* Fixed square width for consistent checkbox visual size. */
+  height: 1rem; /* Fixed square height matching width for proportional box. */
+  cursor: pointer; /* Pointer reinforces that clicking toggles checked state. */
+}
+
+/* Responsive CSS grid of mode / interval listening buttons. */
+.mode-grid {
+  display: grid; /* CSS grid enables auto-fit columns with minimum button width. */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Fluid columns wrapping rows. */
+  gap: 0.75rem; /* Space between adjacent mode buttons horizontally and vertically. */
+  max-width: 700px; /* Prevent overly wide grids on large desktop monitors. */
+  margin: 0 auto; /* Center grid within tab content column below max width cap. */
+}
+
+/* Individual mode or interval tile button default appearance before hover/active. */
+.mode-btn {
+  position: relative; /* Anchor absolutely positioned playing progress indicator inside. */
+  display: flex; /* Stack mode name and mode number lines vertically inside button. */
+  flex-direction: column; /* Column direction for two-line label layout per tile. */
+  align-items: center; /* Center both text lines horizontally within button bounds. */
+  gap: 0.25rem; /* Small vertical gap between primary and secondary label lines. */
+  padding: 1rem 0.75rem; /* Comfortable padding for mouse and touch hit targets. */
+  background: #1a1a2e; /* Dark card background consistent with app chrome palette. */
+  border: 2px solid #2a2a44; /* Subtle border defining tile edges on dark background. */
+  border-radius: 12px; /* Rounded rectangle softer than sharp corners for modern UI. */
+  color: #c0c0d0; /* Light gray label text readable on dark card fill color. */
+  cursor: pointer; /* Entire tile is clickable to trigger listening thunk dispatch. */
+  font-family: inherit; /* Match app sans-serif stack instead of browser default button font. */
+  transition: all 0.2s ease; /* Smooth hover lift and border color interpolation. */
+  overflow: hidden; /* Clip playing indicator animation to rounded button corners. */
+}
+
+/* Hover affordance when button is not disabled (disabled uses lower opacity rule). */
+.mode-btn:hover:not(:disabled) {
+  border-color: #6c5ce7; /* Purple border indicates interactive hover readiness. */
+  background: #22223a; /* Slightly elevated background luminance toward hover state. */
+  transform: translateY(-2px); /* Subtle lift animation suggests pressable physical tile. */
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.2); /* Soft purple glow reinforcing hover. */
+}
+
+/* Disabled tiles cannot be clicked while audio is loading or playing sequence. */
+.mode-btn:disabled {
+  opacity: 0.5; /* Dim disabled controls to show unavailable state clearly. */
+  cursor: not-allowed; /* Cursor communicates that clicks will not register. */
+}
+
+/* Currently sounding mode tile gets teal border and tinted background highlight. */
+.mode-btn.playing {
+  border-color: #4ecdc4 !important; /* Force teal border even over hover specificity. */
+  background: rgba(78, 205, 196, 0.12) !important; /* Translucent teal wash over base fill. */
+  box-shadow: 0 0 20px rgba(78, 205, 196, 0.2); /* Soft outer glow matching playing accent. */
+}
+
+/* Primary line: mode name (Ionian, Dorian, ...) or harmony interval display name. */
+.mode-name {
+  font-weight: 600; /* Semi-bold for first line emphasis in two-line tile layout. */
+  font-size: 1rem; /* Base rem size for comfortable reading at typical phone DPI. */
+}
+
+/* Secondary line: numeric mode index aligned with backend mode numbering 1–7. */
+.mode-number {
+  font-size: 0.75rem; /* Smaller caption size de-emphasizes auxiliary numbering text. */
+  color: #666; /* Darker gray caption color sits below primary line in hierarchy. */
+}
+
+/* Animated bar along bottom edge of tile while that mode's audio is playing. */
+.playing-indicator {
+  position: absolute; /* Positioned relative to .mode-btn bounding box edges. */
+  bottom: 0; /* Flush indicator strip to bottom inner edge of rounded button. */
+  left: 0; /* Start animation from left side of tile for left-to-right progress feel. */
+  height: 3px; /* Thin bar height keeps indicator subtle and non-intrusive visually. */
+  background: #4ecdc4; /* Teal bar color matches playing border and theme accents. */
+  animation: progress 2s linear infinite; /* Looping width animation suggests sound activity. */
+}
+
+/* Keyframes drive horizontal growth of playing-indicator pseudo progress bar width. */
+@keyframes progress {
+  0% { width: 0; } /* Begin each loop cycle with zero visible width at left anchor. */
+  100% { width: 100%; } /* End cycle spanning full inner width of parent button tile. */
+}

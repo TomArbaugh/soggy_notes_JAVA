@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Music note">
+  <!--
+   * Name: Tom Arbaugh
+   * Date: 4/14/2026
+   * Assignment: Final Project
+   * Notes: Ear Trainer
+   -->
+  <defs>
+    <!-- matches .key-btn.selected in App.css -->
+    <linearGradient id="keySel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6c5ce7"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <filter id="keyShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#6c5ce7" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <!-- opaque base so rounded corners aren’t transparent on dark tab strips (matches body bg) -->
+  <rect width="32" height="32" fill="#0f0f1a"/>
+  <rect width="32" height="32" rx="8" ry="8" fill="url(#keySel)" filter="url(#keyShadow)"/>
+  <g fill="#ffffff">
+    <ellipse cx="11.2" cy="20.8" rx="4.9" ry="3.5" transform="rotate(-22 11.2 20.8)"/>
+    <rect x="14.6" y="5.5" width="2.5" height="16.2" rx="1.1"/>
+    <path d="M 17.1 6.8 C 23.5 8.8 25 12.5 22.5 17.8 C 20.2 14.2 18.5 10 17.1 8.2 Z"/>
+  </g>
+</svg>

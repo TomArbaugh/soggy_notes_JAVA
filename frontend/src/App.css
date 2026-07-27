@@ -1,0 +1,286 @@
+/*
+ * Name: Tom Arbaugh
+ * Date: 4/14/2026
+ * Assignment: Final Project
+ * Notes: Ear Trainer
+ */
+/* ── Global Reset ─────────────────────────────────────────────────── */
+/* Universal selector targets every element in the document tree. */
+*,
+/* Include pseudo-elements so padding and border are inside declared width. */
+*::before,
+*::after {
+  box-sizing: border-box; /* Use border-box sizing model for predictable layout math. */
+  margin: 0; /* Remove default browser margins that vary by element type. */
+  padding: 0; /* Remove default padding so spacing is fully intentional. */
+}
+
+/* Base typography and page background for the entire Ear Trainer app. */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif; /* System font stack with Inter preferred when installed. */
+  background: #0f0f1a; /* Dark navy page background matching product theme. */
+  color: #e0e0f0; /* High-contrast light gray body text on dark background. */
+  min-height: 100vh; /* Ensure background fills viewport even with little content. */
+}
+
+/* ── App Shell ───────────────────────────────────────────────────── */
+/* Centered column: flex column so Guide Tones card can sit at the bottom of the viewport. */
+.app {
+  max-width: 900px; /* Limit line length and piano width for readability on wide screens. */
+  margin: 0 auto; /* Horizontally center the column within the viewport. */
+  padding: 1.5rem 1.5rem 1.25rem; /* Slightly less bottom padding; card has its own margin. */
+  min-height: 100vh; /* Full viewport height so footer card can anchor to bottom. */
+  position: relative; /* Establish containing block for absolutely positioned descendants. */
+  display: flex; /* Stack main column and bottom guide-tone anchor vertically. */
+  flex-direction: column; /* Primary content first, guide card last in document flow. */
+}
+
+/* Grows to fill space above the bottom Guide Tones card when content is shorter than the viewport. */
+.app-body {
+  flex: 1 1 auto; /* Consume remaining height so the following sibling sits at the visual bottom. */
+  display: flex; /* Inner column keeps tab content flow consistent. */
+  flex-direction: column; /* Header → picker → piano → tabs → content in one vertical stack. */
+  min-height: 0; /* Allow flex child to shrink for overflow scroll if needed later. */
+}
+
+/* Wrapper for Guide Tones card: pinned to bottom of .app column (page bottom on short content). */
+.guide-tone-panel-anchor {
+  flex-shrink: 0; /* Do not collapse the card when space is tight. */
+  width: 100%; /* Match centered column width for the card. */
+  margin-top: auto; /* Push card to bottom when .app is taller than .app-body content. */
+  padding-top: 1rem; /* Breathing room above the card separator from tab content above. */
+  border-top: 1px solid #2a2a44; /* Subtle line separating main app from guide-tone tools. */
+}
+
+/* ── Guess stats (server-backed Guess.java) ─────────────────────── */
+/* Fixed HUD showing Java-backed cumulative wins and total guesses. */
+.guess-stats-hud {
+  position: fixed; /* Pin to viewport so it stays visible while scrolling content. */
+  top: 0.75rem; /* Offset from top edge of browser viewport. */
+  left: 0.75rem; /* Offset from left edge for top-left placement request. */
+  z-index: 50; /* Draw above normal content but below modal layers if added later. */
+  display: flex; /* Lay out label/value pairs in a horizontal row with wrapping. */
+  align-items: baseline; /* Align text baselines so numbers line up typographically. */
+  flex-wrap: wrap; /* Allow wrapping on very narrow viewports without overflow. */
+  gap: 0.25rem 0.4rem; /* Small gaps between flex items horizontally and vertically. */
+  font-size: 0.8rem; /* Slightly smaller than body text for auxiliary HUD readout. */
+  color: #a8a8c8; /* Muted lavender-gray for de-emphasized chrome text. */
+  background: rgba(15, 15, 26, 0.92); /* Semi-opaque panel over page content behind it. */
+  border: 1px solid #2a2a44; /* Subtle border defining the pill-shaped HUD edge. */
+  border-radius: 8px; /* Rounded corners consistent with key buttons (8px). */
+  padding: 0.4rem 0.65rem; /* Compact internal padding around stats text. */
+}
+
+/* Small uppercase labels preceding numeric stats in the HUD. */
+.guess-stats-label {
+  font-weight: 600; /* Semi-bold for label legibility at small size. */
+  text-transform: uppercase; /* Visual distinction from numeric values. */
+  letter-spacing: 0.04em; /* Slight tracking for uppercase microcopy. */
+  font-size: 0.65rem; /* Smaller than values to reinforce hierarchy. */
+  color: #6c6c8a; /* Even more muted than HUD default text color. */
+}
+
+/* Numeric win and guess totals in the HUD. */
+.guess-stats-value {
+  font-weight: 700; /* Bold numbers for quick scanning. */
+  font-variant-numeric: tabular-nums; /* Prevent width jitter as digits change. */
+  color: #e0e0f0; /* Bright text for primary numeric readout. */
+}
+
+/* Slash separator between wins and guesses labels for quick visual parsing. */
+.guess-stats-sep {
+  color: #4a4a68; /* Low-contrast separator so it does not compete with numbers. */
+  font-weight: 600; /* Slightly heavier than default for glyph balance. */
+  margin: 0 0.1rem; /* Tiny horizontal inset so slash does not touch adjacent text. */
+}
+
+/* Reset cumulative guess stats (POST /api/guess-reset). */
+.guess-reset-btn {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 6px;
+  border: 1px solid #4a4a68;
+  background: #1e1e32;
+  color: #c8c8e8;
+  cursor: pointer;
+}
+
+.guess-reset-btn:hover {
+  border-color: #6c5ce7;
+  color: #fff;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+/* Title region spanning full content width above key picker. */
+.app-header {
+  text-align: center; /* Center the Ear Trainer title text block. */
+  padding-bottom: 1.25rem; /* Space before key picker section begins. */
+}
+
+/* Main product title with gradient text fill for brand emphasis. */
+.app-header h1 {
+  font-size: 1.8rem; /* Prominent heading size without dominating small phones. */
+  font-weight: 700; /* Heavy weight for logotype-style title. */
+  background: linear-gradient(135deg, #6c5ce7, #4ecdc4); /* Purple to teal brand gradient. */
+  -webkit-background-clip: text; /* Safari: paint gradient only inside glyph outlines. */
+  -webkit-text-fill-color: transparent; /* Safari: hide solid fill so gradient shows. */
+  background-clip: text; /* Standard property mirroring WebKit clip behavior. */
+  letter-spacing: -0.02em; /* Slightly tight tracking for modern display heading. */
+}
+
+/* ── Key Picker ──────────────────────────────────────────────────── */
+/* Horizontal row grouping label and chromatic key buttons. */
+.key-picker {
+  display: flex; /* Lay out label and button cluster in one row when space allows. */
+  align-items: center; /* Vertically center label with button row. */
+  justify-content: center; /* Center the whole picker within the app column. */
+  gap: 0.75rem; /* Space between the static label and first key button. */
+  padding: 0.75rem 0 1rem; /* Vertical rhythm above and below the picker strip. */
+  border-bottom: 1px solid #1e1e30; /* Separator line before piano or loading message. */
+}
+
+/* Static text reading "Key of" before chromatic buttons. */
+.key-picker-label {
+  font-weight: 600; /* Medium emphasis for instructional label. */
+  font-size: 1rem; /* Match interactive control text scale for harmony. */
+  color: #888; /* Muted gray so chromatic buttons draw more attention. */
+  white-space: nowrap; /* Prevent awkward wrap between "Key" and "of". */
+}
+
+/* Flex row wrapping chromatic pitch-class buttons. */
+.key-buttons {
+  display: flex; /* Horizontal layout with wrapping for narrow screens. */
+  gap: 0.35rem; /* Tight spacing between adjacent key chips. */
+  flex-wrap: wrap; /* Allow second row on small viewports instead of horizontal scroll. */
+  justify-content: center; /* Center wrapped rows within available width. */
+}
+
+/* Default (unselected) chromatic key button styling. */
+.key-btn {
+  font-family: inherit; /* Use same font stack as body for cohesive UI. */
+  font-size: 0.85rem; /* Slightly smaller than main tabs to fit twelve keys. */
+  font-weight: 600; /* Semi-bold for readable two-letter enharmonic labels. */
+  padding: 0.45rem 0.7rem; /* Compact tap target while meeting usability minimums. */
+  min-width: 42px; /* Equal minimum width so grid looks rhythmically even. */
+  background: #1a1a2e; /* Dark card fill distinct from page background. */
+  color: #999; /* Muted label color for inactive keys. */
+  border: 2px solid #2a2a44; /* Subtle outline defining chip shape. */
+  border-radius: 8px; /* Rounded rectangle matching design language elsewhere. */
+  cursor: pointer; /* Hand cursor indicates clickable control. */
+  transition: all 0.15s ease; /* Smooth hover transitions for border and background. */
+}
+
+/* Hover feedback for keys that are not currently selected. */
+.key-btn:hover {
+  border-color: #6c5ce7; /* Purple outline hints at brand accent on interaction. */
+  color: #ddd; /* Lighten text slightly on hover for affordance. */
+  background: #22223a; /* Slightly lift background luminance toward hover state. */
+}
+
+/* Selected tonic key: matches purple gradient used in primary guess buttons. */
+.key-btn.selected {
+  background: linear-gradient(135deg, #6c5ce7, #a855f7); /* Gradient fill for active key. */
+  color: #fff; /* White text for contrast on saturated gradient background. */
+  border-color: transparent; /* Remove outline clash; gradient defines shape edge. */
+  box-shadow: 0 2px 12px rgba(108, 92, 231, 0.35); /* Soft outer glow reinforcing selection. */
+}
+
+/* ── Loading Message ─────────────────────────────────────────────── */
+/* Inline status text shown while scales or harmonies fetch from Java. */
+.loading-msg {
+  text-align: center; /* Center the loading copy under the key picker. */
+  color: #6c5ce7; /* Brand purple for informational loading state. */
+  font-size: 0.9rem; /* Slightly smaller than body default for secondary message. */
+  padding: 0.5rem 0; /* Vertical padding separating message from adjacent sections. */
+  animation: pulse 1.2s ease-in-out infinite; /* Gentle opacity pulse draws attention. */
+}
+
+/* Keyframes for loading message opacity oscillation. */
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; } /* Dim endpoints of the breathing cycle. */
+  50% { opacity: 1; } /* Peak brightness midpoint of the cycle. */
+}
+
+/* ── Main Tab Bar (Harmonies / Scales / Arpegios) ─────────────────── */
+/* Underline-style tab strip for switching between three major practice areas. */
+.main-tab-bar {
+  display: flex; /* Horizontal row of main tabs centered in the column. */
+  justify-content: center; /* Center tab group when total width is less than max-width. */
+  gap: 0; /* No gap; tabs visually join into one segmented control. */
+  margin-top: 0.5rem; /* Breathing room below piano or loading message. */
+  border-bottom: 2px solid #2a2a44; /* Baseline track for active tab indicator. */
+  flex-wrap: wrap; /* Allow wrapping on very narrow screens without overflow clipping. */
+}
+
+/* Individual main tab button (Harmonies, Scales, Arpegios). */
+.main-tab {
+  font-family: inherit; /* Match global sans stack for consistency. */
+  font-size: 1.05rem; /* Slightly larger than body for primary navigation affordance. */
+  font-weight: 700; /* Bold weight emphasizes top-level navigation. */
+  padding: 0.8rem 1.75rem; /* Generous hit target for mouse and touch users. */
+  background: none; /* Transparent fill; border-bottom shows active state. */
+  border: none; /* Remove default button chrome; custom bottom border instead. */
+  border-bottom: 3px solid transparent; /* Reserve space so layout does not shift on active. */
+  color: #555; /* Dark gray default for inactive tabs on dark background. */
+  cursor: pointer; /* Clickable affordance for navigation buttons. */
+  transition: all 0.2s ease; /* Smooth color and border transitions on hover and select. */
+  margin-bottom: -2px; /* Pull tab down so bottom border visually meets container border. */
+}
+
+/* Hover state for inactive main tabs. */
+.main-tab:hover {
+  color: #aaa; /* Lighten inactive tab text slightly on hover. */
+}
+
+/* Active main tab shows brand purple text and matching bottom border. */
+.main-tab.active {
+  color: #6c5ce7; /* Brand purple for selected top-level area. */
+  border-bottom-color: #6c5ce7; /* Underline accent aligned with text color. */
+}
+
+/* ── Sub Tab Bar (Listen / Guess) ────────────────────────────────── */
+/* Secondary tab strip for Listen vs Guess within each main practice area. */
+.tab-bar {
+  display: flex; /* Horizontal layout for two sub tabs. */
+  justify-content: center; /* Center pair under main tab selection. */
+  gap: 0; /* Flush tabs similar to main tab styling. */
+  margin-top: 0.5rem; /* Separate from main tab bar with modest vertical gap. */
+  border-bottom: 2px solid #1e1e30; /* Slightly darker baseline than main tabs for hierarchy. */
+}
+
+/* Individual Listen / Guess tab button. */
+.tab {
+  font-family: inherit; /* Consistent typography with rest of app chrome. */
+  font-size: 1rem; /* Standard readable size for secondary navigation. */
+  font-weight: 600; /* Semi-bold distinguishes tabs from body copy. */
+  padding: 0.75rem 2.5rem; /* Wide horizontal padding for clear tap targets. */
+  background: none; /* Transparent until active border provides emphasis. */
+  border: none; /* Strip default user-agent button border. */
+  border-bottom: 3px solid transparent; /* Placeholder border width for active state. */
+  color: #666; /* Muted default for inactive sub tab label. */
+  cursor: pointer; /* Indicate interactivity. */
+  transition: all 0.2s ease; /* Animate color and border on interaction. */
+  margin-bottom: -2px; /* Optical alignment with tab-bar bottom border. */
+}
+
+/* Hover feedback on inactive sub tabs. */
+.tab:hover {
+  color: #aaa; /* Slightly brighter gray on hover. */
+}
+
+/* Active sub tab uses teal accent distinct from main tab purple. */
+.tab.active {
+  color: #4ecdc4; /* Teal accent for secondary navigation selection. */
+  border-bottom-color: #4ecdc4; /* Underline matches text for cohesive focus ring. */
+}
+
+/* ── Tab Content ─────────────────────────────────────────────────── */
+/* Minimum height prevents layout jump when switching between heavy and light panels. */
+.tab-content {
+  min-height: 300px; /* Reserve vertical space for listen/guess panel content. */
+}

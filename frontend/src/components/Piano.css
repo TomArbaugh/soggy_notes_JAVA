@@ -1,0 +1,137 @@
+/*
+ * Name: Tom Arbaugh
+ * Date: 4/14/2026
+ * Assignment: Final Project
+ * Notes: Ear Trainer
+ */
+/* Outer flex wrapper centers the piano graphic horizontally in the column. */
+.piano-container {
+  display: flex; /* Flexbox for easy horizontal centering of child piano. */
+  justify-content: center; /* Center piano within available app content width. */
+  padding: 2rem 0; /* Vertical breathing room above and below keyboard graphic. */
+}
+
+/* Relative positioning context for absolutely positioned black keys overlaying whites. */
+.piano {
+  position: relative; /* Black keys position:absolute relative to this box. */
+  display: flex; /* Lay out white keys in a horizontal flex row sharing width evenly. */
+  width: 560px; /* Fixed width gives predictable percent positions for black keys. */
+  height: 220px; /* Tall enough for readable labels and black key stem length. */
+  border-radius: 0 0 8px 8px; /* Round only bottom corners like a physical keybed front. */
+  overflow: visible; /* Allow black key shadows to extend slightly outside box if needed. */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); /* Depth cue separating keyboard from page bg. */
+}
+
+/* ── White Keys ────────────────────────────────────────────────────── */
+/* Each natural note key flexes equally across the white-key row width. */
+.white-key {
+  flex: 1; /* Equal width distribution among seven white keys. */
+  background: linear-gradient(to bottom, #f8f8f8, #e8e8e8); /* Subtle vertical plastic shading. */
+  border: 1px solid #bbb; /* Light gray edge separating adjacent white keys. */
+  border-radius: 0 0 6px 6px; /* Round bottom corners only for key front lip look. */
+  cursor: pointer; /* Keys appear interactive even though click handlers live elsewhere. */
+  position: relative; /* Establish stacking context relative to sibling white keys. */
+  z-index: 1; /* Default white keys sit below black keys (z-index 2). */
+  display: flex; /* Flex centers label text near bottom of key surface. */
+  align-items: flex-end; /* Push key labels toward bottom of tall white key. */
+  justify-content: center; /* Center label horizontally on each white key. */
+  padding-bottom: 12px; /* Space between label text and bottom border of key. */
+  transition: background 0.12s ease, box-shadow 0.12s ease; /* Smooth hover and active cues. */
+}
+
+/* Hover brightens white key slightly for tactile feedback on mouse users. */
+.white-key:hover {
+  background: linear-gradient(to bottom, #fff, #f0f0f0); /* Lift gradient toward white. */
+}
+
+/* Notes belonging to current scale/arpeggio/harmony set get distinct idle coloring. */
+.white-key.in-scale {
+  background: #ffffff; /* Flat white fill reads as "in the current collection". */
+  border-color: #ccc; /* Slightly stronger border to separate from non-members. */
+}
+
+/* Label text color when key is in current collection but not actively sounding. */
+.white-key.in-scale .key-label {
+  color: #555; /* Darker gray improves contrast on pure white in-scale fill. */
+}
+
+/* Actively playing note: strong teal gradient and glow for high visibility. */
+.white-key.active {
+  background: linear-gradient(to bottom, #4ecdc4, #26a69a) !important; /* Teal active fill. */
+  border-color: #00897b !important; /* Darker teal border anchors glowing fill. */
+  box-shadow: 0 0 20px rgba(78, 205, 196, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.3); /* Outer+inner glow. */
+  transform: scaleY(0.98); /* Slight vertical squash mimics key depression animation. */
+  transform-origin: top; /* Squash pivots from top so key appears to press downward. */
+}
+
+/* Default label styling on white keys when not in-scale or active special cases. */
+.white-key .key-label {
+  font-size: 0.85rem; /* Readable pitch-class name size on white key width. */
+  font-weight: 600; /* Semi-bold for legibility on light backgrounds. */
+  color: #666; /* Medium gray default label color on pale key gradient. */
+  user-select: none; /* Prevent accidental text selection when dragging across keys. */
+}
+
+/* Label color while key is actively sounding (paired with .white-key.active). */
+.white-key.active .key-label {
+  color: #fff; /* White text on saturated teal active gradient. */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow improves glyph separation. */
+}
+
+/* ── Black Keys ────────────────────────────────────────────────────── */
+/* Accidental keys overlay white row using absolute positioning and percent left offsets. */
+.black-key {
+  position: absolute; /* Overlay black keys between specific white key pairs. */
+  width: 9%; /* Relative width scales with piano container width constant. */
+  height: 60%; /* Shorter than white keys like a real piano keyboard geometry. */
+  background: linear-gradient(to bottom, #333, #111); /* Dark vertical shading for ebony look. */
+  border: 1px solid #000; /* Sharp black outline defines black key silhouette. */
+  border-radius: 0 0 5px 5px; /* Rounded bottom corners mimic physical black key lip. */
+  z-index: 2; /* Ensure black keys always draw above adjacent white key rectangles. */
+  cursor: pointer; /* Pointer cursor matches white key affordance. */
+  display: flex; /* Center accidental labels near bottom of shortened key height. */
+  align-items: flex-end; /* Align label near bottom edge of black key. */
+  justify-content: center; /* Center sharp note text horizontally on narrow key. */
+  padding-bottom: 8px; /* Less padding than white keys due to shorter height. */
+  transition: background 0.12s ease, box-shadow 0.12s ease; /* Smooth hover/active transitions. */
+  top: 0; /* Anchor top of black key flush with top of white key row. */
+}
+
+/* Hover slightly lifts luminance of black key gradient for feedback. */
+.black-key:hover {
+  background: linear-gradient(to bottom, #444, #222); /* Brighter top stop on hover. */
+}
+
+/* In-scale accidental uses inverted light fill to remain visible on dark theme page. */
+.black-key.in-scale {
+  background: #4a4a4a; /* High contrast white fill for membership indication. */
+  border-color: #888; /* Gray border visible against white fill and dark neighbors. */
+}
+
+/* Label color for in-scale black keys on white fill background. */
+.black-key.in-scale .key-label {
+  color: #e8e8e8; /* Dark text on white accidental key for readability. */
+}
+
+/* Active accidental uses teal gradient tuned darker than white-key active for balance. */
+.black-key.active {
+  background: linear-gradient(to bottom, #4ecdc4, #00897b) !important; /* Teal active fill. */
+  border-color: #00695c !important; /* Deep teal border anchors glow. */
+  box-shadow: 0 0 20px rgba(78, 205, 196, 0.6), inset 0 0 8px rgba(255, 255, 255, 0.2); /* Glow stack. */
+  transform: scaleY(0.97); /* Slightly stronger squash than white keys for shorter height. */
+  transform-origin: top; /* Pivot squash from top edge like physical hinge. */
+}
+
+/* Default label styling for black keys on dark gradient backgrounds. */
+.black-key .key-label {
+  font-size: 0.65rem; /* Smaller text fits narrow black key width without wrapping. */
+  font-weight: 600; /* Semi-bold improves legibility at reduced font size. */
+  color: #999; /* Mid gray on near-black keys remains readable without overpowering. */
+  user-select: none; /* Avoid selection highlight when moving pointer across keyboard. */
+}
+
+/* Active label styling on black keys mirrors white-key active label treatment. */
+.black-key.active .key-label {
+  color: #fff; /* White glyphs on bright teal active fill. */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); /* Stronger shadow for contrast on darker teal. */
+}

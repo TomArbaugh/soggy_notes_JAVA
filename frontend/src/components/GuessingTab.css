@@ -1,0 +1,173 @@
+/*
+ * Name: Tom Arbaugh
+ * Date: 4/14/2026
+ * Assignment: Final Project
+ * Notes: Ear Trainer
+ */
+/* Root wrapper for all scale, arpeggio, and harmony guessing tab layouts. */
+.guessing-tab {
+  padding: 1.5rem 0; /* Vertical padding separates guess UI from tab chrome above. */
+  text-align: center; /* Center primary buttons and grid under narrow mobile layouts. */
+}
+
+/* ── Controls ────────────────────────────────────────────────────── */
+/* Flex row grouping reverse toggle, primary play button, and optional replay button. */
+.guess-controls {
+  display: flex; /* Horizontal layout with wrapping for small screen widths. */
+  flex-wrap: wrap; /* Allow controls to drop to next line instead of overflowing horizontally. */
+  justify-content: center; /* Center control cluster within app content column width. */
+  align-items: center; /* Vertically align differing control heights along cross axis. */
+  gap: 0.75rem; /* Space between adjacent controls for touch-friendly separation. */
+  margin-bottom: 1.25rem; /* Breathing room before result banner or guess grid below. */
+}
+
+/* Modifier: reverse checkbox row spans full width above primary buttons in guess tabs. */
+.reverse-toggle-inline {
+  margin-bottom: 0; /* Remove extra bottom margin when inline variant stacks above buttons. */
+  width: 100%; /* Force full-width row so checkbox label centers predictably above row. */
+  justify-content: center; /* Center checkbox and caption within forced full width. */
+}
+
+/* Shared base styles for primary and secondary rounded rectangular guess controls. */
+.guess-btn {
+  font-family: inherit; /* Match global typography instead of browser default button font. */
+  font-size: 1rem; /* Standard readable button label size for primary actions. */
+  font-weight: 600; /* Semi-bold weight improves legibility on gradient backgrounds. */
+  border: none; /* Remove default border; shadows and gradients define button shape instead. */
+  border-radius: 10px; /* Rounded corners consistent with guess option tiles below. */
+  padding: 0.7rem 1.6rem; /* Generous padding yields comfortable click/tap target size. */
+  cursor: pointer; /* Hand cursor indicates clickable control affordance to users. */
+  transition: all 0.2s ease; /* Smooth hover elevation and shadow transitions over time. */
+}
+
+/* Disabled guess buttons fade and show not-allowed cursor during playback or loading. */
+.guess-btn:disabled {
+  opacity: 0.5; /* Reduced opacity visually encodes unavailable interactive state. */
+  cursor: not-allowed; /* Reinforces that click will not start a new action while disabled. */
+}
+
+/* Primary call-to-action gradient matching selected key styling in App.css. */
+.guess-btn-primary {
+  background: linear-gradient(135deg, #6c5ce7, #a855f7); /* Purple brand gradient fill. */
+  color: #fff; /* White text for maximum contrast on saturated gradient background. */
+  box-shadow: 0 2px 12px rgba(108, 92, 231, 0.3); /* Soft outer glow suggesting elevation. */
+}
+
+/* Hover deepens glow and slightly lifts primary button when not disabled. */
+.guess-btn-primary:hover:not(:disabled) {
+  box-shadow: 0 4px 20px rgba(108, 92, 231, 0.5); /* Stronger purple glow on hover focus. */
+  transform: translateY(-1px); /* Subtle negative Y translation mimics button press prep. */
+}
+
+/* Secondary replay button uses dark neutral fill distinct from gradient primary. */
+.guess-btn-secondary {
+  background: #2a2a3e; /* Dark blue-gray card fill harmonized with app background hues. */
+  color: #c0c0d0; /* Light gray text readable on dark secondary button background color. */
+  border: 1px solid #444466; /* Thin border defines edges where shadow is subtle. */
+}
+
+/* Hover state for secondary button brightens fill and adds purple border accent. */
+.guess-btn-secondary:hover:not(:disabled) {
+  background: #3a3a4e; /* Slightly lifted luminance indicates interactive hover readiness. */
+  border-color: #6c5ce7; /* Purple border ties secondary hover to brand accent color. */
+}
+
+/* ── Result Banner ───────────────────────────────────────────────── */
+/* Large YES/NO text after each guess attempt for immediate feedback visibility. */
+.result-banner {
+  font-size: 3rem; /* Very large display size for quick peripheral vision recognition. */
+  font-weight: 800; /* Extra-bold glyph weight supports oversized headline rendering. */
+  letter-spacing: 0.1em; /* Wide tracking separates block letters aesthetically at scale. */
+  margin: 1rem 0; /* Vertical margin separates banner from controls above and grid below. */
+  animation: popIn 0.25s ease-out; /* Short scale-in animation draws eye to new feedback text. */
+}
+
+/* Correct guess banner uses mint green color aligned with success semantics elsewhere. */
+.result-banner.yes {
+  color: #55efc4; /* Bright mint green text color for positive reinforcement feedback. */
+  text-shadow: 0 0 30px rgba(85, 239, 196, 0.5); /* Outer glow echoing success highlight tone. */
+}
+
+/* Incorrect guess banner uses coral red aligned with error semantics in guess grid. */
+.result-banner.no {
+  color: #ff6b6b; /* Coral red text color for negative attempt without harsh pure red. */
+  text-shadow: 0 0 30px rgba(255, 107, 107, 0.5); /* Soft red glow emphasizes NO headline. */
+}
+
+/* Keyframes for popIn animation: scale from small to full with opacity fade-in. */
+@keyframes popIn {
+  0% {
+    transform: scale(0.5); /* Start half-size for zoom-in emphasis effect on mount. */
+    opacity: 0; /* Fully transparent at first frame so text fades in while growing. */
+  }
+  100% {
+    transform: scale(1); /* End at natural size so layout matches static design spec. */
+    opacity: 1; /* Fully opaque at end of very short 250ms feedback animation cycle. */
+  }
+}
+
+/* ── Guess Prompt ────────────────────────────────────────────────── */
+/* Prompt line above guess grid asking which mode or interval user heard this round. */
+.guess-prompt {
+  color: #888; /* Muted gray instructional text does not compete with bright buttons. */
+  margin-bottom: 1rem; /* Space before first row of guess-option buttons in CSS grid. */
+  font-size: 1rem; /* Standard body text size for short question string legibility. */
+}
+
+/* ── Guess Grid ──────────────────────────────────────────────────── */
+/* Responsive grid of answer buttons for modes or harmony interval labels. */
+.guess-grid {
+  display: grid; /* CSS grid lays out answer tiles with auto-fit min column width. */
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Tighter min than listen grid. */
+  gap: 0.65rem; /* Compact gap fits more buttons per row on desktop without crowding touch. */
+  max-width: 650px; /* Cap grid width so tiles do not stretch awkwardly on ultrawide. */
+  margin: 0 auto; /* Center guess grid within tab content column beneath prompt text. */
+}
+
+/* Default styling for each answer tile before hover, wrong, or correct modifiers apply. */
+.guess-option {
+  font-family: inherit; /* Consistent font with rest of app instead of system button font. */
+  font-size: 0.95rem; /* Slightly smaller than primary buttons to fit seven tiles per row. */
+  font-weight: 600; /* Semi-bold for readable mode names at reduced font size on mobile. */
+  padding: 0.8rem 0.5rem; /* Adequate vertical padding for touch-friendly tile height target. */
+  border: 2px solid #2a2a44; /* Baseline border color matches other dark card outlines. */
+  border-radius: 10px; /* Rounded corners align with guess-btn border-radius design token. */
+  background: #1a1a2e; /* Dark neutral fill consistent with listening mode tiles palette. */
+  color: #c0c0d0; /* Light gray label text readable on dark tile background color fill. */
+  cursor: pointer; /* Entire tile is clickable answer for current guess round question. */
+  transition: all 0.2s ease; /* Smooth color, border, and transform transitions on hover. */
+}
+
+/* Hover highlights only when tile is not disabled and not marked wrong (wrong locks style). */
+.guess-option:hover:not(:disabled):not(.wrong) {
+  border-color: #6c5ce7; /* Purple border communicates interactive hover readiness clearly. */
+  background: #22223a; /* Slightly brighter fill on hover for tactile feedback illusion. */
+  transform: translateY(-2px); /* Lift effect matches listening mode tile hover behavior. */
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.2); /* Soft purple glow ties hover to brand hue. */
+  color: #fff; /* Pure white text on hover for maximum contrast against lifted background. */
+}
+
+/* Disabled tiles after solve: neutral cursor and no further interaction expected. */
+.guess-option:disabled {
+  cursor: default; /* Arrow cursor indicates clicking will not change state post-solve. */
+}
+
+/* Correct answer tile after solve: green border and glow with mint text color treatment. */
+.guess-option.correct {
+  border-color: #00b894 !important; /* Force green border over hover specificity when solved. */
+  background: rgba(0, 184, 148, 0.15) !important; /* Translucent green tint wash over base fill. */
+  color: #55efc4 !important; /* Mint text color aligns with success banner YES styling. */
+  box-shadow: 0 0 20px rgba(0, 184, 148, 0.25); /* Soft outer green glow highlights correct tile. */
+  transform: scale(1.05); /* Slight scale-up draws attention to revealed correct answer choice. */
+}
+
+/* Wrong guess tiles: muted, struck through, and non-interactive for rest of round UI. */
+.guess-option.wrong {
+  border-color: #d63031; /* Red border encodes incorrect attempt visually without flashing. */
+  background: rgba(214, 48, 49, 0.1); /* Very light red wash indicates error without harsh fill. */
+  color: #666; /* Dim gray text de-emphasizes wrong labels after they have been chosen once. */
+  opacity: 0.5; /* Lower overall opacity pushes wrong answers visually into background layer. */
+  text-decoration: line-through; /* Strikethrough reinforces that option is eliminated logically. */
+  cursor: not-allowed; /* Communicate that clicking again will not register additional guesses. */
+  pointer-events: none; /* Hard block any further mouse or touch interaction on wrong tiles. */
+}
